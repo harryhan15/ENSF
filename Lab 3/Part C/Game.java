@@ -27,7 +27,7 @@ public class Game implements Constants {
      */
     public void appointReferee(Referee r) throws IOException {
         theRef = r;
-    	//theRef.runTheGame();
+    	theRef.runTheGame();
     }
     
 	
@@ -56,9 +56,9 @@ public class Game implements Constants {
 		
 		oPlayer = create_player (name, LETTER_O, theGame.theBoard, stdin);
 		
-		//theRef = new Referee(theGame.theBoard, xPlayer, oPlayer);
+		theRef = new Referee(theGame.theBoard, xPlayer, oPlayer);
         
-        //theGame.appointReferee(theRef);
+        theGame.appointReferee(theRef);
 	}
 	
 	/**

@@ -8,8 +8,22 @@ import java.io.*;
 
 public class Referee {
 	
-	public static void main(String[] args) {
+	private Player xPlayer;
+	private Player oPlayer;
+	private Board board;
+	
+	public Referee(){
+	}
+	
+	public Referee(Board board, Player xPlayer, Player oPlayer){
+		this.xPlayer = xPlayer;
+		this.oPlayer = oPlayer;
+		this.board = board;
+	}
+	
+	public void runTheGame() throws IOException {
+		xPlayer.setOpponent(oPlayer);
+		xPlayer.play();
 		
 	}
-
 }
