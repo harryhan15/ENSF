@@ -3,9 +3,12 @@ import java.io.*;
 
 /**
  * @author Started by: M. Moussavi
- * Completed by: 
+ * Completed by: Harry Han, Yida Xu
  * Asks the user to select a player type, creates the player, creates the board,
  * assigns a referee to the game, then initiates the game.
+ *
+ * @version 1.0
+ * @since February 2, 2016
  */
 public class Game implements Constants {
 
