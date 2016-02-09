@@ -1,4 +1,5 @@
 import java.io.*;
+import java.text.*;
 
 /**
  * ENSF 409 - Lab 3 - Winter 2016
@@ -76,15 +77,25 @@ public class Player implements Constants {
 	 * @throws IOException
 	 */
 	public void play() throws IOException {
-		int move = -1;
+		Integer move = -1;
 		
-		while(move != 0 || move != 1) {
+		while(true) {
 			BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-			System.out.println("Who will play first?\n\nEnter '0' for Player 1 (X) or '1' for Player 2 (O).\n");
-			String input = stdin.readLine();
-			move = Integer.parseInt(input);
+			System.out.print("Who will play first?\nEnter '0' for Player 1 (X) or '1' for Player 2 (O): ");
+			String input = stdin.readLine().trim();
+
+			while (input.isEmpty() || parseInt(input) == null) {
+				System.out.println("\nPlease try again.");
+				System.out.print("Who will play first?\nEnter '0' for Player 1 (X) or '1' for Player 2 (O): ");
+				input = stdin.readLine();
 			}
-		
+
+			move = parseInt(input);
+			if (move == 1 || move == 0) {
+				break;
+				}
+			}
+
 		while(board.xWins() != 1 && board.oWins() != 1 && board.isFull() !=true) {
 			if(move == 0){
 				makeMove();
@@ -116,14 +127,43 @@ public class Player implements Constants {
 	 */
 	public void makeMove() throws IOException {
 		BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+
+		int col, row;
 		
-		System.out.print("\nPlease enter a row: ");
-		String input = stdin.readLine();
-		int row = Integer.parseInt(input);
+		while(true) {
+			System.out.print("\nPlease enter a row: ");
+			String input = stdin.readLine().trim();
+
+			while (input.isEmpty() || parseInt(input) == null) {
+				System.out.println("\nPlease try again.");
+				System.out.print("\nPlease enter a row: ");
+				input = stdin.readLine();
+			}
+
+			row = Integer.parseInt(input);
+
+			if (row >=0 && row <=2) {
+				break;
+			}
+		}
 		
-		System.out.print("Please enter a column: ");
-		input = stdin.readLine();
-		int col = Integer.parseInt(input);
+		while(true) {
+			System.out.print("\nPlease enter a column: ");
+			String input = stdin.readLine().trim();
+
+			while (input.isEmpty() || parseInt(input) == null) {
+				System.out.println("\nPlease try again.");
+				System.out.print("\nPlease enter a column: ");
+				input = stdin.readLine();
+			}
+
+			col = Integer.parseInt(input);
+
+			if (col >=0 && col <=2) {
+				break;
+			}
+		}
+
 		System.out.println();
 		
 		if (board.getMark(row, col) == 'O' || board.getMark(row, col) == 'X'){
@@ -134,56 +174,19 @@ public class Player implements Constants {
 		}
 		else {
 			board.addMark(row, col, mark);
-		}
-		
-		board.display();
+			board.display();
 		}
 	}
 
 	/**
-	 * A class constructor that inherits Players private members for human players
-	 */ 
-	class HumanPlayer extends Player{
-		public HumanPlayer(){
-		}
-	
-		public HumanPlayer(String name, char mark, Board board) {
-			super(name, mark, board);
-		}
-	}
-	
-	/**
-	 * A class constructor that inherits HumanPlayers private members for random players
-	 */ 
-	class RandomPlayer extends HumanPlayer{
-		public RandomPlayer(){
-		}
-	
-		public RandomPlayer(String name, char mark, Board board) {
-			super(name, mark, board);
-		}
-	}
-	
-	/**
-	 * A class constructor that inherits RandomPlayers private members for blocking players
-	 */ 
-	class BlockingPlayer extends RandomPlayer{
-		public BlockingPlayer(){
-		}
-	
-		public BlockingPlayer(String name, char mark, Board board) {
-			super(name, mark, board);
-		}
-	}
-	
-	/**
-	 * A class constructor that inherits BlockingPlayers private members for smart players
-	 */ 
-	class SmartPlayer extends BlockingPlayer{
-		public SmartPlayer(){
-		}
-	
-		public SmartPlayer(String name, char mark, Board board) {
-			super(name, mark, board);
+	 * Responsible for parsing the input and ensuring the input is an integer
+	 */
+	public Integer parseInt(String data) {
+		Integer val = null;
+		try {
+			val = Integer.parseInt(data);
+			} catch (NumberFormatException nfe) {}
+
+		return val;
 		}
 	}

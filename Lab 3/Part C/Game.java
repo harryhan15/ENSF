@@ -32,7 +32,6 @@ public class Game implements Constants {
         theRef = r;
     	theRef.runTheGame();
     }
-    
 	
 	public static void main(String[] args) throws IOException {
 		
@@ -42,8 +41,8 @@ public class Game implements Constants {
 		Game theGame = new Game();
 		stdin = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("\nPlease enter the name of the \'X\' player: ");
-		String name= stdin.readLine();
-		while (name == null) {
+		String name= stdin.readLine().trim();
+		while (name.isEmpty()) {
 			System.out.print("Please try again: ");
 			name = stdin.readLine();
 		}
@@ -51,8 +50,8 @@ public class Game implements Constants {
 		xPlayer = create_player (name, LETTER_X, theGame.theBoard, stdin);
 		
 		System.out.print("\nPlease enter the name of the \'O\' player: ");
-		name = stdin.readLine();
-		while (name == null) {
+		name = stdin.readLine().trim();
+		while (name.isEmpty()) {
 			System.out.print("Please try again: ");
 			name = stdin.readLine();
 		}
@@ -77,45 +76,45 @@ public class Game implements Constants {
 	static public Player create_player(String name, char mark, Board board,
 			BufferedReader stdin)throws IOException {
 		// Get the player type.
-		final int NUMBER_OF_TYPES = 4;
-		System.out.print ( "\nWhat type of player is " + name + "?\n");
-		System.out.print("  1: Human\n" + "  2: Random Player\n"
-    	+ "  3: Blocking Player\n" + "  4: Smart Player\n");
-		System.out.print( "Please enter a number in the range 1-" + NUMBER_OF_TYPES + ": ");
-		int player_type = 0;
+		//final int NUMBER_OF_TYPES = 4;
+		//System.out.print ( "\nWhat type of player is " + name + "?\n");
+		//System.out.print("  1: Human\n" + "  2: Random Player\n"
+    	//+ "  3: Blocking Player\n" + "  4: Smart Player\n");
+		//System.out.print( "Please enter a number in the range 1-" + NUMBER_OF_TYPES + ": ");
+		//int player_type = 0;
 
-		String input;
-		stdin = new BufferedReader(new InputStreamReader(System.in));
-		input= stdin.readLine();
-		player_type = Integer.parseInt(input);
-		while (player_type < 1 || player_type > NUMBER_OF_TYPES) {
-			System.out.print( "Please try again.\n");
-			System.out.print ( "Enter a number in the range 1-" +NUMBER_OF_TYPES + ": ");
-			input= stdin.readLine();
-			player_type = Integer.parseInt(input);
-		}
+		//String input;
+		//stdin = new BufferedReader(new InputStreamReader(System.in));
+		//input= stdin.readLine();
+		//player_type = Integer.parseInt(input);
+		//while (player_type < 1 || player_type > NUMBER_OF_TYPES) {
+		//	System.out.print( "Please try again.\n");
+		//	System.out.print ( "Enter a number in the range 1-" +NUMBER_OF_TYPES + ": ");
+		//	input= stdin.readLine();
+		//	player_type = Integer.parseInt(input);
+		//}
 //		
 //		// Create a specific type of Player 
-		Player result = null;
-		switch(player_type) {
-			case 1:
-				result = new HumanPlayer(name, mark, board);
-				break;
-			case 2:
-				result = new RandomPlayer(name, mark, board);
-				break;
-			case 3:
-				result = new BlockingPlayer(name, mark, board);
-				break;
-			case 4:
-				result = new SmartPlayer(name, mark, board);
-				break;
-			default:
-				System.out.print ( "\nDefault case in switch should not be reached.\n"
-				+ "  Program terminated.\n");
-				System.exit(0);
-		}
-//		Player result = new Player(name, mark, board);
+		//Player result = null;
+		//switch(player_type) {
+		//	case 1:
+		//		result = new HumanPlayer(name, mark, board);
+		//		break;
+		//	case 2:
+		//		result = new RandomPlayer(name, mark, board);
+		//		break;
+		//	case 3:
+		//		result = new BlockingPlayer(name, mark, board);
+		//		break;
+		//	case 4:
+		//		result = new SmartPlayer(name, mark, board);
+		//		break;
+		//	default:
+		//		System.out.print ( "\nDefault case in switch should not be reached.\n"
+		//		+ "  Program terminated.\n");
+		//		System.exit(0);
+		//}
+		Player result = new Player(name, mark, board);
 		return result;
 	}
 }
