@@ -76,7 +76,7 @@ public class Game implements Constants {
 		// Get the player type.
 		final int NUMBER_OF_TYPES = 4;
 		System.out.print ( "\nWhat type of player is " + name + "?\n");
-		System.out.print("  1: human\n" + "  2: Random Player\n"
+		System.out.print("  1: Human\n" + "  2: Random Player\n"
 		+ "  3: Blocking Player\n" + "  4: Smart Player\n");
 		System.out.print( "Please enter a number in the range 1-" + NUMBER_OF_TYPES + ": ");
 		int player_type = 0;
