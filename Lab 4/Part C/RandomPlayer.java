@@ -11,11 +11,11 @@ import java.text.*;
  	/**
 	 * A class constructor that inherits Players private members for human players
 	 */ 
-public class HumanPlayer extends Player{
-		public HumanPlayer(){
+public class RandomPlayer extends Player{
+		public RandomPlayer(){
 		}
 	
-		public HumanPlayer(String name, char mark, Board board) {
+		public RandomPlayer(String name, char mark, Board board) {
 			super(name, mark, board);
 		}
 	}
