@@ -42,6 +42,8 @@ public class Board implements Constants {
 	 *
 	 * @param row the row to check
 	 * @param col the column to check
+	 *
+	 * @return theBoard
 	 */
 	public char getMark(int row, int col) {
 		return theBoard[row][col];
@@ -49,6 +51,8 @@ public class Board implements Constants {
 
 	/**
 	 * A boolean method to see if the board game is full. Returns true if full, false if not.
+	 *
+	 * @return markCount
 	 */
 	public boolean isFull() {
 		return markCount == 9;
@@ -56,6 +60,8 @@ public class Board implements Constants {
 
 	/**
 	 * A method that checks if the xPlayer is the winner. Returns 1 if true, 0 if false.
+	 *
+	 * @return checkWinner
 	 */
 	public int xWins() {
 		return checkWinner(LETTER_X);
@@ -63,6 +69,8 @@ public class Board implements Constants {
 	
 	/**
 	 * A method that checks if the oPlayer is the winner. Returns 1 if true, 0 if false.
+	 *
+	 * @return checkWinner
 	 */
 	public int oWins() {
 		return checkWinner(LETTER_O);
@@ -111,6 +119,8 @@ public class Board implements Constants {
 	 * Checks the winner by verifying that there are 3 of the same marks in a row
 	 *
 	 * @param mark the mark to verify
+	 *
+	 * @return checkWinner
 	 */
 	int checkWinner(char mark) {
 		int row, col;

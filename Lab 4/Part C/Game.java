@@ -39,8 +39,8 @@ public class Game implements Constants {
 		Game theGame = new Game();
 		stdin = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("\nPlease enter the name of the \'X\' player: ");
-		String name= stdin.readLine();
-		while (name == null) {
+		String name= stdin.readLine().trim();
+		while (name.isEmpty()) {
 			System.out.print("Please try again: ");
 			name = stdin.readLine();
 		}
@@ -48,8 +48,8 @@ public class Game implements Constants {
 		xPlayer = create_player (name, LETTER_X, theGame.theBoard, stdin);
 		
 		System.out.print("\nPlease enter the name of the \'O\' player: ");
-		name = stdin.readLine();
-		while (name == null) {
+		name = stdin.readLine().trim();
+		while (name.isEmpty()) {
 			System.out.print("Please try again: ");
 			name = stdin.readLine();
 		}

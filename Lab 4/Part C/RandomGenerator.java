@@ -1,4 +1,3 @@
-
 //  RandomGenerator.java
 
 import java.util.Random;

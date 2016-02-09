@@ -51,7 +51,7 @@ public class Referee {
 	public void runTheGame() throws IOException {
 		xPlayer.setOpponent(oPlayer);
 		
-		System.out.println("Staring the game...\n");
+		System.out.println("Starting the game...\n");
 		
 		xPlayer.play();
 	}
