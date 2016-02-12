@@ -4,14 +4,14 @@ import java.io.InputStreamReader;
 
 public class RandomPlayer extends HumanPlayer{
 	
-	public RandomPlayer(){
+	protected RandomPlayer(){
 	}
 
-	public RandomPlayer(String name, char mark, Board board) {
+	protected RandomPlayer(String name, char mark, Board board) {
 		super(name, mark, board);
 	}
 	
-	public void makeMove(){
+	protected void makeMove(){
 		
 		int col, row;
 		RandomGenerator x = new RandomGenerator();
@@ -28,13 +28,11 @@ public class RandomPlayer extends HumanPlayer{
 		else {
 			board.addMark(row, col, mark);
 			board.display();
-		}
-		
-		
+		}	
 	}
 
 
-	public void play() throws IOException {
+	protected void play() throws IOException {
 		Integer move = -1;
 		
 		while(true) {
