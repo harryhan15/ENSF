@@ -27,16 +27,16 @@ public class Game implements Constants{
 	private Board theBoard;
 	private Referee theRef;
 	private Player xPlayer, oPlayer;
-	private Thread t1, t2;
+	//private Thread t1, t2;
 	
 	private static int status = -1;
 	
 	/**
 	 * creates a board for the game
 	 */
-    public Game(int portNumber) throws IOException {        
+    public Game(int portNumber) {        
 		try {
-		    theBoard  = new Board();
+			theBoard  = new Board();
 			serverSocket = new ServerSocket(portNumber);
 			
 			System.out.println("Server is Running....");
@@ -46,38 +46,29 @@ public class Game implements Constants{
 			}
 	}
 	
-	public void communicate() {
-		String name = "";
+	public void communicate(){
 		while (true) {
-            try {
-            	if(status == -1){
-					xPlayer = new Player(name, LETTER_X, this.theBoard, serverSocket.accept());
-					xPlayer.setName();
-					status = 0;
-				}
-				else if(status == 0){
-					oPlayer = new Player(name, LETTER_O, this.theBoard, serverSocket.accept());
-					oPlayer.setName();
-					status = 1;
-				}
-				else if(status == 1){
-					Referee theRef = new Referee(this.theBoard, xPlayer, oPlayer);
-   		 			this.appointReferee(theRef);
-   		 			status = 2;
-				}
-				else if(status == 2) {
-					t1 = new Thread(xPlayer);
-					t1.start();
-					status = 3;
-				}
-				else if(status == 3) {
-					t2 = new Thread(oPlayer);
-					t2.start();
-					status = 4;
-				}
-            } catch (IOException e) {
-                System.out.println("I/O error: " + e);
-            }
+			try{
+				String name = "";
+
+				xPlayer = new Player(name, LETTER_X, this.theBoard, serverSocket.accept());
+				xPlayer.setName();
+
+				oPlayer = new Player(name, LETTER_O, this.theBoard, serverSocket.accept());
+				oPlayer.setName();
+
+				Referee theRef = new Referee(this.theBoard, xPlayer, oPlayer);
+				this.appointReferee(theRef);
+
+				Thread t1 = new Thread(xPlayer);
+				Thread t2 = new Thread(oPlayer);
+
+				t1.start();
+				t2.start();
+
+			} catch (IOException e) {
+				System.err.println(e.getStackTrace());
+			}
         }
 	}
 

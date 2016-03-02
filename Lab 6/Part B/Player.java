@@ -1,6 +1,11 @@
 import java.io.*;
 import java.text.*;
 import java.net.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Condition;
 
 /**
  * ENSF 409 - Lab 3 - Winter 2016
@@ -11,10 +16,10 @@ import java.net.*;
 
 public class Player implements Constants, Runnable {
 
-	PrintWriter socketOut;
-	Socket clientSocket; 
-	ServerSocket serverSocket; 
-	BufferedReader socketIn;
+	private PrintWriter socketOut;
+	private Socket clientSocket; 
+	private ServerSocket serverSocket; 
+	private BufferedReader socketIn;
 
 	/**
 	 * The name of the player
@@ -37,6 +42,8 @@ public class Player implements Constants, Runnable {
 	private char mark;
 	
 	private Socket client;
+
+	private Lock gameLock;
 		
 	/**
 	 * The default constructor of the class Player.
@@ -59,6 +66,14 @@ public class Player implements Constants, Runnable {
 		this.mark = mark;
 		this.board = board;
 		this.client = client;
+		gameLock = new ReentrantLock();
+
+		try{
+			socketOut = new PrintWriter(client.getOutputStream(), true);
+    		socketIn = new BufferedReader(new InputStreamReader(client.getInputStream()));
+		} catch (IOException e) {
+                System.out.println("I/O error: " + e);
+        }
 	}
 	
 	/**
@@ -78,81 +93,87 @@ public class Player implements Constants, Runnable {
 		return mark;
 	}
 	
-	private static int xCheck = -1;
-	private static int oCheck = -1;
+	private int check = -1;
+	private static int count = 0;
 	
-	public void setName(){
+	public synchronized void setName(){
 		try{
 			StringBuffer read = null;
-			socketOut = new PrintWriter(client.getOutputStream(), true);
-    		socketIn = new BufferedReader(new InputStreamReader(client.getInputStream()));
-				if(xCheck == -1 && oCheck == -1){
-					socketOut.println("\nPlease enter the name of the \'X\' player: ");
-					read = new StringBuffer(socketIn.readLine());
-			
-					while (read == null) {
-						socketOut.println("Please try again: ");
-						read = new StringBuffer(socketIn.readLine());
-					}
-					String name = read.toString();
-					this.name = name;
-					socketOut.println("Server Message: Waiting for opponent...");
-					xCheck = 0;
+
+			if(count == 0){
+				socketOut.println("\nPlease enter the name of the \'X\' player: ");
 				}
-				else if(xCheck == 0 && oCheck == -1){
-					socketOut.println("\nPlease enter the name of the \'O\' player: ");
-					read = new StringBuffer(socketIn.readLine());
-			
-					while (read == null) {
-						socketOut.println("Please try again: ");
-						read = new StringBuffer(socketIn.readLine());
-					}
-					String name = read.toString();
-					this.name = name;
-					socketOut.println("Server Message: Staring the game...");
-					oCheck = 0;
+			else if(count == 1){
+				socketOut.println("\nPlease enter the name of the \'O\' player: ");
 				}
-				else if(xCheck == 0 && oCheck == 0){
-					
-				}
+
+			read = new StringBuffer(socketIn.readLine());
+			socketOut.flush();
+
+			String name = read.toString();
+			this.name = name;
+
+			count++;
 		} catch (IOException e) {
                 System.out.println("I/O error: " + e);
         }
 	}
 	
-	private static int xMove = -1;
-	private static int oMove = -1;
+	private static int move = 1;
 	private static int xStatus = -1;
 	private static int oStatus = -1;
 	
-	public void firstMove() throws IOException{
-		StringBuffer read = null;
-		socketOut = new PrintWriter(client.getOutputStream(), true);
-    	socketIn = new BufferedReader(new InputStreamReader(client.getInputStream()));
-    	
-    	socketOut.println("Who will play first?\nEnter '0' for Player 1 (X) or '1' for Player 2 (O): ");
-    	read = new StringBuffer(socketIn.readLine());
-    	String first = read.toString();
-    	
-    	if(first == "0"){
-    		xMove = 1;
-    		oMove = 0;
-    	}
-    	else if(first == "1"){
-    		xMove = 0;
-    		oMove = 1;
-    	}
-    		
+	public synchronized void firstMove() throws IOException{
+    	socketOut.println("Who will play first? Enter '0' for Player 1 (X) or '1' for Player 2 (O): ");
+		socketOut.flush();
+
+		StringBuffer read = new StringBuffer(socketIn.readLine());
+
+		int move = Integer.parseInt(read.toString());
+  
 	}
+
+	public int c = 0;
 	
-	public void run(){
-		try{
-			if(xMove == -1 && oMove == -1){
-				firstMove();
+	public synchronized void move() throws IOException{
+		if(mark == 'X'){
+			move = 0;
 			}
-		} catch (IOException e) {
-                System.out.println("I/O error: " + e);
-        }
+		else if(mark == 'O'){
+			move = 1;
+			}
+		c++;
+	}
+
+
+	public void run(){
+		
+		try{
+			setName();
+
+			//Player 1 gets to chose who goes first
+			/*try {
+				if(mark == 'X' && xMove == -1 && oMove == -1) 
+					firstMove();
+			} finally {
+				gameLock.unlock();
+			}*/
+
+			while(c < 8){
+				gameLock.lock();
+				try {
+					move();
+					socketOut.println("Move: " + move);
+					socketOut.flush();
+				} finally {
+					gameLock.unlock();
+				}
+
+			}
+
+		} catch (IOException e) { 
+				System.out.println("I/O error: " + e);
+		}
 	}
 	
 	/**
@@ -165,11 +186,10 @@ public class Player implements Constants, Runnable {
 	public void play() throws IOException {
 		Integer move = -1;
 
-			move = parseInt(input);
-			if (move == 1 || move == 0) {
-				break;
-				}
-			}
+			//move = parseInt(input);
+			//if (move == 1 || move == 0) {
+			//	break;
+			//	}
 
 		while(board.xWins() != 1 && board.oWins() != 1 && board.isFull() !=true) {
 			if(move == 0){

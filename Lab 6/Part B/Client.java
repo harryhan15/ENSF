@@ -33,6 +33,7 @@ public class Client {
 				System.out.println(response);
 				line = stdIn.readLine();
 				socketOut.println(line);
+				socketOut.flush();
 			} catch (IOException e) {
 				System.out.println("Sending error: " + e.getMessage());
 			}
