@@ -1,3 +1,11 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.net.ServerSocket;
+
 // Board.java 
 // ENSF 409 - LAB 6 - Ex. C
 // This file was originally written for ENGG 335 in fall 2001, and was 
@@ -21,7 +29,10 @@ public class Board implements Constants {
 	 * The number of marks on the board
 	 */
 	private int markCount;
+	private Socket client;
 
+	private PrintWriter socketOut;
+	private BufferedReader socketIn;
 	/**
 	 * Constructs a Board ID with the specific values for markCount and the construction of the board.
 	 * - markCount = 0
@@ -79,18 +90,31 @@ public class Board implements Constants {
 	/**
 	 * Prints the board to the command window
 	 */
-	public void display() {
+	public void display(Socket client) {
+		try{
+			socketOut = new PrintWriter(client.getOutputStream(), true);
+    		socketIn = new BufferedReader(new InputStreamReader(client.getInputStream()));
+		} catch (IOException e) {
+                System.out.println("I/O error: " + e);
+        }
+
 		displayColumnHeaders();
 		addHyphens();
 		for (int row = 0; row < 3; row++) {
 			addSpaces();
-			System.out.print("    row " + row + ' ');
-			for (int col = 0; col < 3; col++)
-				System.out.print("|  " + getMark(row, col) + "  ");
-			System.out.println("|");
+			socketOut.print("    row " + row + ' ');
+			socketOut.flush();
+			for (int col = 0; col < 3; col++){
+				socketOut.print("|  " + getMark(row, col) + "  ");
+				socketOut.flush();
+			}
+			socketOut.println("|");
+			socketOut.flush();
 			addSpaces();
 			addHyphens();
 		}
+
+		socketOut.flush();
 	}
 
 	/**
@@ -167,29 +191,38 @@ public class Board implements Constants {
 	 * Displays the column headers to the drawing of the board
 	 */
 	void displayColumnHeaders() {
-		System.out.print("          ");
+		socketOut.print("          ");
+		socketOut.flush();
 		for (int j = 0; j < 3; j++)
-			System.out.print("|col " + j);
-		System.out.println();
+			socketOut.print("|col " + j);
+			socketOut.flush();
+		socketOut.println();
+		socketOut.flush();
 	}
 
 	/**
 	 * Adds hyphens to the drawing of the board
 	 */
 	void addHyphens() {
-		System.out.print("          ");
+		socketOut.print("          ");
+		socketOut.flush();
 		for (int j = 0; j < 3; j++)
-			System.out.print("+-----");
-		System.out.println("+");
+			socketOut.print("+-----");
+			socketOut.flush();
+		socketOut.println("+");
+		socketOut.flush();
 	}
 
 	/** 
 	 * Adds spaces to the drawing of the board
 	 */
 	void addSpaces() {
-		System.out.print("          ");
+		socketOut.print("          ");
+		socketOut.flush();
 		for (int j = 0; j < 3; j++)
-			System.out.print("|     ");
-		System.out.println("|");
+			socketOut.print("|     ");
+			socketOut.flush();
+		socketOut.println("|");
+		socketOut.flush();
 	}
 }

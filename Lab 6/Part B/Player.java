@@ -101,187 +101,144 @@ public class Player implements Constants, Runnable {
 			StringBuffer read = null;
 
 			if(count == 0){
-				socketOut.println("\nPlease enter the name of the \'X\' player: ");
+				socketOut.println("name");
+				socketOut.flush();
+				socketOut.println("Please enter the name of the \'X\' player: ");
+				socketOut.flush();
 				}
 			else if(count == 1){
-				socketOut.println("\nPlease enter the name of the \'O\' player: ");
+				socketOut.println("name");
+				socketOut.flush();
+				socketOut.println("Please enter the name of the \'O\' player: ");
+				socketOut.flush();
 				}
 
 			read = new StringBuffer(socketIn.readLine());
-			socketOut.flush();
 
 			String name = read.toString();
 			this.name = name;
 
 			count++;
+			socketOut.println("end");
 		} catch (IOException e) {
                 System.out.println("I/O error: " + e);
         }
 	}
 	
-	private static int move = 1;
+	private static int move = -1;
 	private static int xStatus = -1;
 	private static int oStatus = -1;
 	
 	public synchronized void firstMove() throws IOException{
-    	socketOut.println("Who will play first? Enter '0' for Player 1 (X) or '1' for Player 2 (O): ");
+		socketOut.println("first");
+		socketOut.flush();
+    	socketOut.println("Who will play first?");
+		socketOut.flush();
+		socketOut.println("Enter '0' for Player 1 (X) or '1' for Player 2 (O): ");
 		socketOut.flush();
 
 		StringBuffer read = new StringBuffer(socketIn.readLine());
 
-		int move = Integer.parseInt(read.toString());
-  
+		move = Integer.parseInt(read.toString());
+  		socketOut.println("end");
+		socketOut.flush();
 	}
 
 	public int c = 0;
 	
 	public synchronized void move() throws IOException{
-		if(mark == 'X'){
-			move = 0;
+		if(mark == 'X' && move == 0){
+			socketOut.println("game");
+			board.display(client);
+			socketOut.println("Please enter a row: ");
+			socketOut.flush();
+			int row = Integer.parseInt(socketIn.readLine());
+			socketOut.println("Please enter a col: ");
+			socketOut.flush();
+			int col = Integer.parseInt(socketIn.readLine());
+
+			if (board.getMark(row, col) == 'O' || board.getMark(row, col) == 'X'){
+				socketOut.println("occupied");
+				socketOut.flush();
+				socketOut.println("The space is already occupied.");
+				socketOut.flush();
+				move();
+				}
+			else {
+				socketOut.println("good");
+				board.addMark(row, col, mark);
+				board.display(client);
+				socketOut.flush();
+				move = 1;
 			}
-		else if(mark == 'O'){
-			move = 1;
+		}
+		else if(mark == 'O' && move == 1){
+			socketOut.println("game");
+			board.display(client);
+			socketOut.println("Please enter a row: ");
+			socketOut.flush();
+			int row = Integer.parseInt(socketIn.readLine());
+			socketOut.println("Please enter a col: ");
+			socketOut.flush();
+			int col = Integer.parseInt(socketIn.readLine());
+
+			if (board.getMark(row, col) == 'O' || board.getMark(row, col) == 'X'){
+				socketOut.println("occupied");
+				socketOut.flush();
+				socketOut.println("The space is already occupied.");
+				socketOut.flush();
+				move();
+				}
+			else {
+				socketOut.println("good");
+				board.addMark(row, col, mark);
+				board.display(client);
+				socketOut.flush();
+				move = 0;
 			}
-		c++;
+		}
+			
+	}
+
+	public synchronized void winner(){
+		socketOut.println("winner");
+		socketOut.flush();
+
+		if(board.xWins() == 1 || board.oWins() == 1) {
+			String result = "The winner of the game is: ";
+			if(board.checkWinner(mark) == 1)			
+				result += name;
+			else
+				result += opponent.name;
+
+			//board.display(client);
+
+			socketOut.println(result);
+			socketOut.flush();
+		}
+		else {
+			socketOut.println("The game was a tie.");
+			socketOut.flush();
+		}
 	}
 
 
 	public void run(){
 		
 		try{
-			setName();
-
 			//Player 1 gets to chose who goes first
-			/*try {
-				if(mark == 'X' && xMove == -1 && oMove == -1) 
-					firstMove();
-			} finally {
-				gameLock.unlock();
-			}*/
+			if(mark == 'X' && move == -1) 
+				firstMove();
 
-			while(c < 8){
-				gameLock.lock();
-				try {
-					move();
-					socketOut.println("Move: " + move);
-					socketOut.flush();
-				} finally {
-					gameLock.unlock();
-				}
-
+			while(board.xWins() != 1 && board.oWins() != 1 && board.isFull() !=true){
+				move();
 			}
+
+			winner();
 
 		} catch (IOException e) { 
 				System.out.println("I/O error: " + e);
 		}
 	}
 	
-	/**
-	 * The method where the game will be played. The method ensures the turns go back and forth
-	 * between the opponent and the player. Also responsible for printing out the result of the 
-	 * game. Calls method makeMove() to draw and print the moves made in the game.
-	 *
-	 * @throws IOException
-	 */
-	public void play() throws IOException {
-		Integer move = -1;
-
-			//move = parseInt(input);
-			//if (move == 1 || move == 0) {
-			//	break;
-			//	}
-
-		while(board.xWins() != 1 && board.oWins() != 1 && board.isFull() !=true) {
-			if(move == 0){
-				makeMove();
-				move = 1;
-			}
-			else {
-				opponent.makeMove();
-				move = 0;
-			}
-		}
-		
-		if(board.xWins() == 1 || board.oWins() == 1) {
-			System.out.print("\nThe winner of the game is: ");
-			if(board.checkWinner(mark) == 1){
-				System.out.println(name + "\n");
-			}
-			else
-				System.out.println(opponent.name + "\n");
-		}
-		else
-			System.out.println("\nThe game resulted in a tie.\n");
-	}
-	
-	/**
-	 * Responsible for making the player perform a move. Expects an input of a row and column
-	 * and verifies that the space is empty.
-	 *
-	 * @throws IOException
-	 */
-	public void makeMove() throws IOException {
-		BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-
-		int col, row;
-		
-		while(true) {
-			System.out.print("\nPlease enter a row: ");
-			String input = stdin.readLine().trim();
-
-			while (input.isEmpty() || parseInt(input) == null) {
-				System.out.println("\nPlease try again.");
-				System.out.print("\nPlease enter a row: ");
-				input = stdin.readLine();
-			}
-
-			row = Integer.parseInt(input);
-
-			if (row >=0 && row <=2) {
-				break;
-			}
-		}
-		
-		while(true) {
-			System.out.print("\nPlease enter a column: ");
-			String input = stdin.readLine().trim();
-
-			while (input.isEmpty() || parseInt(input) == null) {
-				System.out.println("\nPlease try again.");
-				System.out.print("\nPlease enter a column: ");
-				input = stdin.readLine();
-			}
-
-			col = Integer.parseInt(input);
-
-			if (col >=0 && col <=2) {
-				break;
-			}
-		}
-
-		System.out.println();
-		
-		if (board.getMark(row, col) == 'O' || board.getMark(row, col) == 'X'){
-			System.out.println("\nThe space is already occupied.\n");
-			board.display();
-			
-			makeMove();
-		}
-		else {
-			board.addMark(row, col, mark);
-			board.display();
-		}
-	}
-
-	/**
-	 * Responsible for parsing the input and ensuring the input is an integer
-	 */
-	public Integer parseInt(String data) {
-		Integer val = null;
-		try {
-			val = Integer.parseInt(data);
-			} catch (NumberFormatException nfe) {}
-
-		return val;
-		}
-	}
+}
