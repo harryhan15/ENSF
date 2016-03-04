@@ -7,17 +7,16 @@ import java.net.UnknownHostException;
 
 public class Client {
 	private PrintWriter socketOut;
-	private Socket palinSocket;
+	private Socket socket;
 	private BufferedReader stdIn;
 	private BufferedReader socketIn;
 
 	public Client(String serverName, int portNumber) {
 		try {
-			palinSocket = new Socket(serverName, portNumber);
+			socket = new Socket(serverName, portNumber);
 			stdIn = new BufferedReader(new InputStreamReader(System.in));
-			socketIn = new BufferedReader(new InputStreamReader(
-					palinSocket.getInputStream()));
-			socketOut = new PrintWriter((palinSocket.getOutputStream()), true);
+			socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			socketOut = new PrintWriter((socket.getOutputStream()), true);
 		} catch (IOException e) {
 			System.err.println(e.getStackTrace());
 		}
@@ -76,13 +75,13 @@ public class Client {
 							getAndPrintBoard();
 							break;
 						}
-
 						response = socketIn.readLine();
 					}
 				}
+				else if(response.equals("update")) {
+						getAndPrintBoard();
+					}
 				else if(response.equals("winner")) {
-					//getAndPrintBoard();
-					
 					response = socketIn.readLine();
 					System.out.println(response);
 					break;

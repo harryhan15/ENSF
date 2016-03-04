@@ -66,6 +66,19 @@ public class Game implements Constants{
 				t1.start();
 				t2.start();
 
+				try{
+					t1.join();
+					t2.join();
+				} catch(InterruptedException e){
+					System.err.println(e.getStackTrace());
+				}
+
+				xPlayer.finalBoard();
+				oPlayer.finalBoard();
+
+				xPlayer.winner();
+				oPlayer.winner();
+
 			} catch (IOException e) {
 				System.err.println(e.getStackTrace());
 			}

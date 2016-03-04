@@ -17,8 +17,6 @@ import java.util.concurrent.locks.Condition;
 public class Player implements Constants, Runnable {
 
 	private PrintWriter socketOut;
-	private Socket clientSocket; 
-	private ServerSocket serverSocket; 
 	private BufferedReader socketIn;
 
 	/**
@@ -44,6 +42,14 @@ public class Player implements Constants, Runnable {
 	private Socket client;
 
 	private Lock gameLock;
+
+	private static int count = 0;
+	private static int move = -1;
+	private static int win = 0;
+	private static int end = 0;
+
+	private static int row = -1;
+	private static int col = -1;
 		
 	/**
 	 * The default constructor of the class Player.
@@ -93,9 +99,6 @@ public class Player implements Constants, Runnable {
 		return mark;
 	}
 	
-	private int check = -1;
-	private static int count = 0;
-	
 	public synchronized void setName(){
 		try{
 			StringBuffer read = null;
@@ -125,10 +128,6 @@ public class Player implements Constants, Runnable {
         }
 	}
 	
-	private static int move = -1;
-	private static int xStatus = -1;
-	private static int oStatus = -1;
-	
 	public synchronized void firstMove() throws IOException{
 		socketOut.println("first");
 		socketOut.flush();
@@ -143,8 +142,6 @@ public class Player implements Constants, Runnable {
   		socketOut.println("end");
 		socketOut.flush();
 	}
-
-	public int c = 0;
 	
 	public synchronized void move() throws IOException{
 		if(mark == 'X' && move == 0){
@@ -152,10 +149,10 @@ public class Player implements Constants, Runnable {
 			board.display(client);
 			socketOut.println("Please enter a row: ");
 			socketOut.flush();
-			int row = Integer.parseInt(socketIn.readLine());
+			row = Integer.parseInt(socketIn.readLine());
 			socketOut.println("Please enter a col: ");
 			socketOut.flush();
-			int col = Integer.parseInt(socketIn.readLine());
+			col = Integer.parseInt(socketIn.readLine());
 
 			if (board.getMark(row, col) == 'O' || board.getMark(row, col) == 'X'){
 				socketOut.println("occupied");
@@ -177,10 +174,10 @@ public class Player implements Constants, Runnable {
 			board.display(client);
 			socketOut.println("Please enter a row: ");
 			socketOut.flush();
-			int row = Integer.parseInt(socketIn.readLine());
+			row = Integer.parseInt(socketIn.readLine());
 			socketOut.println("Please enter a col: ");
 			socketOut.flush();
-			int col = Integer.parseInt(socketIn.readLine());
+			col = Integer.parseInt(socketIn.readLine());
 
 			if (board.getMark(row, col) == 'O' || board.getMark(row, col) == 'X'){
 				socketOut.println("occupied");
@@ -197,44 +194,77 @@ public class Player implements Constants, Runnable {
 				move = 0;
 			}
 		}
-			
 	}
 
 	public synchronized void winner(){
-		socketOut.println("winner");
-		socketOut.flush();
-
-		if(board.xWins() == 1 || board.oWins() == 1) {
-			String result = "The winner of the game is: ";
-			if(board.checkWinner(mark) == 1)			
-				result += name;
-			else
-				result += opponent.name;
-
-			//board.display(client);
-
-			socketOut.println(result);
+		if(end == 0){
+			socketOut.println("winner");
 			socketOut.flush();
+
+			if(board.xWins() == 1 || board.oWins() == 1) {
+				String result = "The winner of the game is: ";
+				if(board.checkWinner(mark) == 1)			
+					result += name;
+				else
+					result += opponent.name;
+
+				socketOut.println(result);
+				socketOut.flush();
+			}
+			else {
+				socketOut.println("The game was a tie.");
+				socketOut.flush();
+			}
+		end++;
 		}
-		else {
-			socketOut.println("The game was a tie.");
+		else if(end == 1){
+			socketOut.println("winner");
 			socketOut.flush();
+
+			if(board.xWins() == 1 || board.oWins() == 1) {
+				String result = "The winner of the game is: ";
+				if(board.checkWinner(mark) == 1)			
+					result += name;
+				else
+					result += opponent.name;
+
+				socketOut.println(result);
+				socketOut.flush();
+			}
+			else {
+				socketOut.println("The game was a tie.");
+				socketOut.flush();
+			}
+		end++;
 		}
 	}
 
+	public synchronized void finalBoard(){
+		if(win == 0) {
+			socketOut.println("update");
+			socketOut.flush();
+
+			board.display(client);
+			win++;
+		}
+		else if(win == 1) {
+			socketOut.println("update");
+			socketOut.flush();
+
+			board.display(client);
+			win++;
+		}
+	}
 
 	public void run(){
-		
 		try{
 			//Player 1 gets to chose who goes first
 			if(mark == 'X' && move == -1) 
 				firstMove();
 
-			while(board.xWins() != 1 && board.oWins() != 1 && board.isFull() !=true){
+			while(board.xWins() != 1 && board.oWins() != 1 && board.isFull() !=true) {
 				move();
 			}
-
-			winner();
 
 		} catch (IOException e) { 
 				System.out.println("I/O error: " + e);
