@@ -86,9 +86,6 @@ public class Client {
 					System.out.println(response);
 					break;
 				}
-				else if(response.equals("end")) {
-					
-				}
 			} catch (IOException e) {
 				System.out.println("Sending error: " + e.getMessage());
 			}
