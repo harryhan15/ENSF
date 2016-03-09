@@ -1,10 +1,11 @@
 import javax.swing.*;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 
-public class CreateTreeFrame extends JFrame {
+public class CreateTreeFrame extends JFrame{
 	BinSearchTree tree;
 	
 	private JPanel buttonPanel;
@@ -26,6 +27,7 @@ public class CreateTreeFrame extends JFrame {
 		
 		buttonPanel = new JPanel();
 		okButton = new JButton("OK");
+		okButton.setEnabled(false);
 		cancelButton = new JButton("Cancel");
 		
 		buttonPanel.add(cancelButton);
@@ -41,6 +43,27 @@ public class CreateTreeFrame extends JFrame {
 		c.add(buttonPanel, "South");
 		c.add(filePanel, "Center");
 		
+		fileField.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+    			changed();
+  			}
+			public void removeUpdate(DocumentEvent e) {
+    			changed();
+  			}
+ 			public void insertUpdate(DocumentEvent e) {
+ 			   changed();
+			}
+			
+			public void changed() {
+				if (fileField.getText().equals("")){
+					okButton.setEnabled(false);
+   	  			}
+     			else {
+       				okButton.setEnabled(true);
+    			}
+    		}
+  		});
+		
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				setVisible(false);
@@ -55,24 +78,27 @@ public class CreateTreeFrame extends JFrame {
 				try {
 					s = new Scanner(textFile);
 				} catch( FileNotFoundException e ) {
-					System.out.println( "File not found" );
+					ImageIcon icon = new ImageIcon(CreateTreeFrame.class.getResource("redIcon.png"));
+					JOptionPane.showMessageDialog(null, "File Not Found.\nNote: Please include the extension of the file (eg. '.txt', '.doc', etc.).", "Error Message", JOptionPane.ERROR_MESSAGE);
 				}
 				
-				while(s.hasNext()){
-					String id = s.next();
-					String faculty = s.next();
-					String major = s.next();
-					String year = s.next();
+				if(s != null) {
+					while(s.hasNext()){
+						String id = s.next();
+						String faculty = s.next();
+						String major = s.next();
+						String year = s.next();
 					
-					tree.insert(id, faculty, major, year);
-				}
-				
+						tree.insert(id, faculty, major, year);
+					}
 				setVisible(false);
+				}
 			}
 		});
 		
 		this.pack();
 	}
+
 }
 	
 	

@@ -57,7 +57,7 @@ public class BinarySearchMainFrame extends JFrame {
 				try {
 					binSearchTree.print_tree(binSearchTree.root, pw);
 				} catch(IOException e) {
-					System.out.println( "Couldn't print." );
+					System.out.println("Couldn't print.");
 				}
 				
 				textArea.setText( "    ID    " + " Faculty " + "  Major  " + "   Year   \n" + sw.toString());
