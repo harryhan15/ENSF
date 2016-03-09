@@ -1,7 +1,7 @@
 /**
  * Started by M. Moussavi
  * March 2015
- * Completed by: STUDENT(S) NAME
+ * Completed by:  Harry Han, Yida Xu
  */
 
 import java.io.FileInputStream;
