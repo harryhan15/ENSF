@@ -12,6 +12,8 @@ public class BinarySearchMainFrame extends JFrame {
 	private JLabel titleLabel;
 	
 	private CreateTreeFrame createTreeFrame;
+	private FindFrame findFrame;
+	private InsertFrame insertFrame;
 	
 	//Buttons
 	private JButton insertButton;
@@ -48,19 +50,38 @@ public class BinarySearchMainFrame extends JFrame {
 		scrollPane = new JScrollPane(textArea);
 		textArea.setEditable(false);
 		textArea.insert("Input a text file to display the records of all students.", 0);
-		
+		textArea.setFont(new Font("Courier New", Font.PLAIN, 12));
+
+		findButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt){
+				findFrame = new FindFrame(binSearchTree);
+				findFrame.setVisible(true);
+			}
+		});
+
+		insertButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt){
+				insertFrame = new InsertFrame(binSearchTree);
+				insertFrame.setVisible(true);
+			}
+		});
+
 		browseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				StringWriter sw = new StringWriter();
 				PrintWriter pw = new PrintWriter(sw);
 				
-				try {
-					binSearchTree.print_tree(binSearchTree.root, pw);
-				} catch(IOException e) {
-					System.out.println("Couldn't print.");
+				if(binSearchTree.root == null){
+					JOptionPane.showMessageDialog(null, "No file has been read in.", "Error Message", JOptionPane.ERROR_MESSAGE);
 				}
-				
-				textArea.setText( "    ID    " + " Faculty " + "  Major  " + "   Year   \n" + sw.toString());
+				else {
+					try {
+						binSearchTree.print_tree(binSearchTree.root, pw);
+					} catch(IOException e) {
+						System.out.println("Couldn't print.");
+					}
+					textArea.setText("ID  " + "   Faculty  " + "  Major  " + " Year   \n" + "-------------------------------------\n"  + sw.toString());
+				}
 				pw.close();
 			}
 		});
@@ -76,7 +97,8 @@ public class BinarySearchMainFrame extends JFrame {
 		c.add(scrollPane, "Center");
 		c.add(buttonsPanel, "South");
 		
-		this.pack();
+		this.setLocationRelativeTo(null);
+		this.setSize(600, 400);
 		this.setVisible(true);
 	}
 	

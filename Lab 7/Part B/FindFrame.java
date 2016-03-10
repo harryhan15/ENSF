@@ -5,8 +5,10 @@ import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 
-public class CreateTreeFrame extends JFrame{
-	BinSearchTree tree;
+public class FindFrame extends JFrame{
+	
+BinSearchTree tree;
+Node node;
 	
 	private JPanel buttonPanel;
 	private JPanel filePanel;
@@ -18,8 +20,9 @@ public class CreateTreeFrame extends JFrame{
 	
 	private Container c;
 	
-	public CreateTreeFrame(BinSearchTree binSearchTree) {
-		super("Create Tree From Frame");
+	
+	public FindFrame(BinSearchTree binSearchTree) {
+		super("Find");
 		
 		tree = binSearchTree;
 		
@@ -33,8 +36,8 @@ public class CreateTreeFrame extends JFrame{
 		buttonPanel.add(cancelButton);
 		buttonPanel.add(okButton);
 		
-		label = new JLabel("Enter The File Name:");
-		fileField = new JTextField(20);
+		label = new JLabel("Enter The ID:");
+		fileField = new JTextField(5);
 		
 		filePanel = new JPanel();
 		filePanel.add(label);
@@ -42,7 +45,7 @@ public class CreateTreeFrame extends JFrame{
 		
 		c.add(buttonPanel, "South");
 		c.add(filePanel, "Center");
-		
+
 		fileField.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
     			changed();
@@ -72,26 +75,18 @@ public class CreateTreeFrame extends JFrame{
 		
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				File textFile = new File(fileField.getText());
+				String idNum = fileField.getText();
 				
-				Scanner s = null;
-				try {
-					s = new Scanner(textFile);
-				} catch( FileNotFoundException e ) {
-					JOptionPane.showMessageDialog(null, "File Not Found.\nNote: Please include the extension of the file (.txt).", "Error Message", JOptionPane.ERROR_MESSAGE);
+				node = tree.find(tree.root, idNum);
+				
+				if(node != null)
+				{
+					JOptionPane.showMessageDialog(null, node.toString());
 				}
-				
-				if(s != null) {
-					while(s.hasNext()){
-						String id = s.next();
-						String faculty = s.next();
-						String major = s.next();
-						String year = s.next();
-					
-						tree.insert(id, faculty, major, year);
-					}
+				else
+					JOptionPane.showMessageDialog(null, "Cannot Find ID.", "Error Message", JOptionPane.ERROR_MESSAGE);
+				System.out.println(node.toString());
 				setVisible(false);
-				}
 			}
 		});
 		
@@ -100,5 +95,3 @@ public class CreateTreeFrame extends JFrame{
 	}
 
 }
-	
-	
