@@ -46,6 +46,8 @@ public:
   DictionaryList();
   DictionaryList(const DictionaryList& source);
   DictionaryList& operator =(const DictionaryList& rhs);
+  friend std::ostream& operator <<(std::ostream& os, DictionaryList& rhs);
+  Mystring operator [](int index);
   ~DictionaryList();
 
   int size() const;

@@ -6,6 +6,7 @@
 
 #include <assert.h>
 #include <iostream>
+#include <ostream>
 #include <stdlib.h>
 #include "dictionaryList.h"
 #include "mystring.h"
@@ -34,6 +35,31 @@ DictionaryList& DictionaryList::operator =(const DictionaryList& rhs)
     copy(rhs);
   }
   return *this;
+}
+
+std::ostream& operator <<(std::ostream& os, DictionaryList& rhs)
+{
+	rhs.go_to_first();
+
+	while (rhs.cursor_ok()) {
+		os << rhs.cursor_key() << "   " << rhs.cursor_datum() << endl;
+		rhs.step_fwd();
+	}
+
+	return os;
+}
+
+Mystring DictionaryList::operator [](int index)
+{
+	this->go_to_first();
+
+	int count = 0;
+	while (count != index) {
+		this->step_fwd();
+		count++;
+	}
+
+	return this->cursor_datum();
 }
 
 DictionaryList::~DictionaryList()

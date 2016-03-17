@@ -39,7 +39,8 @@ class Mystring {
   bool operator !=(const Mystring& rhs) const;
   friend std::ostream& operator <<(std::ostream& os, const Mystring& rhs);
   
-  char operator [](int index) const;
+  char operator [](int index);
+  char &operator [](int index) const;
 
   int length() const;
   // PROMISES: Return value is number of chars in charsM.

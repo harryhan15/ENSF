@@ -39,13 +39,15 @@ Mystring::Mystring(const Mystring& source):
   lengthM(source.lengthM), charsM(new char[source.lengthM+1])
 {
     strcpy (charsM, source.charsM);
-	cout << "\ncopy constructor is called. ";
+	//Commnent out for Part 3
+	//cout << "\ncopy constructor is called. ";
 }
 
 Mystring::~Mystring()
 {
     delete [] charsM;
-	cout << "\ndestructor is called. ";
+	//Commnent out for Part 3
+	//cout << "\ndestructor is called. ";
 }
 
 int Mystring::length() const
@@ -183,11 +185,16 @@ std::ostream& operator <<(std::ostream& os, const Mystring& rhs)
 	return os << rhs.c_str();
 }
 
-char Mystring::operator [](int index) const
+char Mystring::operator [](int index)
 {
-	assert(index >= 0 && index << lengthM);
+	assert(index >= 0 && index < lengthM);
 
-	return get_char(index);
+	return charsM[index];
+}
+
+char& Mystring::operator [](int index) const
+{
+	return charsM[index];
 }
 
 Mystring& Mystring::append(const Mystring other)
