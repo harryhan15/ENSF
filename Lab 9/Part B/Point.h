@@ -9,6 +9,7 @@ private:
 	static int point;
 public:
 	Point(double x, double y);
+	~Point();
 
 	void setXCoord(double x);
 	void setYCoord(double y);

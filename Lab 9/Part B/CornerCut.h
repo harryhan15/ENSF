@@ -10,7 +10,9 @@ private:
 	
 public:
 	CornerCut(double x, double y, double sideA, double sideB, double radius, char* shapeName);
+	~CornerCut();
 	CornerCut(CornerCut& c);
+	
 	CornerCut & operator=(CornerCut& c);
 
 	double area();

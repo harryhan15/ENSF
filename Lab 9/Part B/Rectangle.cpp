@@ -11,6 +11,8 @@ Rectangle::Rectangle(double x, double y, double sideA, double sideB, char* shape
 	side_b = sideB;
 }
 
+Rectangle::~Rectangle() {}
+
 Rectangle::Rectangle(Rectangle& r) : Shape(r.getOrigin().getXCoord(), r.getOrigin().getYCoord(), r.getName()) {
 	side_a = r.getSideA();
 	side_b = r.getSideB();

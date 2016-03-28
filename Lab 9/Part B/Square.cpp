@@ -10,6 +10,12 @@ Square::Square(char* shapeName, double x, double y, double side) : Shape(x, y, s
 	side_a = side;
 }
 
+Square::~Square() {}
+
+Square::Square(Square& s) : Shape(s.getOrigin().getXCoord(), s.getOrigin().getYCoord(), s.getName()) {
+	side_a = s.getSideA();
+}
+
 double Square::area() {
 	return side_a * side_a;
 }

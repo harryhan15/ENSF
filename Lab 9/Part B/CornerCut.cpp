@@ -10,6 +10,8 @@ using namespace std;
 
 CornerCut::CornerCut(double x, double y, double sideA, double sideB, double radius, char* shapeName) : Rectangle(x, y, sideA, sideB, shapeName), Circle(x, y, radius, shapeName), Shape(x, y, shapeName) {}
 
+CornerCut::~CornerCut() {}
+
 CornerCut::CornerCut(CornerCut& c) : Rectangle(c.getOrigin().getXCoord(), c.getOrigin().getYCoord(), c.getSideA(), c.getSideB(), c.getName()),
 										   Circle(c.getOrigin().getXCoord(), c.getOrigin().getYCoord(), c.getRadius(), c.getName()),
 										   Shape(c.getOrigin().getXCoord(), c.getOrigin().getYCoord(), c.getName()) {}

@@ -12,6 +12,12 @@ Circle::Circle(double x, double y, double rad, char* shapeName) : Shape(x, y, sh
 	radius = rad;
 }
 
+Circle::~Circle() {}
+
+Circle::Circle(Circle& c) : Shape(c.getOrigin().getXCoord(), c.getOrigin().getYCoord(), c.getName()) {
+	radius = c.getRadius();
+}
+
 double Circle::area() {
 	return M_PI * pow(radius, 2);
 }

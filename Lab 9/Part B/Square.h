@@ -6,6 +6,8 @@ private:
 	double side_a;
 public:
 	Square(char* shapeName, double x, double y, double side);
+	~Square();
+	Square(Square& s);
 
 	double area();
 	double perimeter();

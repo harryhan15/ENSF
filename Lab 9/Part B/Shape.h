@@ -10,6 +10,7 @@ private:
 public:
 	Shape(double x, double y, char* name);
 	~Shape();
+	Shape(Shape& s);
 
 	Point getOrigin();
 	void setOrigin(Point p);

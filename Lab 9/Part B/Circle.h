@@ -6,6 +6,8 @@ private:
 	double radius;
 public:
 	Circle(double x, double y, double rad, char* shapeName);
+	~Circle();
+	Circle(Circle& c);
 
 	double area();
 	double perimeter();

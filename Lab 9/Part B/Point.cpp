@@ -14,6 +14,8 @@ Point::Point(double x, double y) {
 	point++;
 }
 
+Point::~Point() {}
+
 void Point::setXCoord(double x) {
 	xCoord = x;
 }

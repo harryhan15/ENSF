@@ -14,6 +14,11 @@ Shape::~Shape() {
 	delete[] shapeName;
 }
 
+Shape::Shape(Shape& s) : origin(s.getOrigin().getXCoord(), s.getOrigin().getYCoord()) {
+	origin = s.getOrigin();
+	shapeName = s.getName();
+}
+
 Point Shape::getOrigin() {
 	return origin;
 }
